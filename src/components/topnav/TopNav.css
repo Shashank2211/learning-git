@@ -1,0 +1,8 @@
+.topnav {
+	background-color: #ffffff;
+	height: 57px;
+	box-shadow: 0px 2px 8px -2px rgba(0, 0, 0, 0.25);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

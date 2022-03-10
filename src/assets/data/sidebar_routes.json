@@ -1,0 +1,22 @@
+[
+	{
+		"display_name": "Dashboard",
+		"route": "/"
+	},
+	{
+		"display_name": "Users",
+		"route": "/Users"
+	},
+	{
+		"display_name": "Ascent Talks",
+		"route": "/AscentTalks"
+	},
+	{
+		"display_name": "Website Mails",
+		"route": "/WebsiteMails"
+	},
+	{
+		"display_name": "Orders",
+		"route": "/Orders"
+	}
+]

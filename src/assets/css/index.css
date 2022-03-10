@@ -1,0 +1,22 @@
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	-webkit-tap-highlight-color: transparent;
+}
+
+body {
+	font-family: "Roboto", sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	letter-spacing: 0.7px;
+}
+
+a {
+	text-decoration: none;
+	color: unset;
+}
+
+a:hover {
+	color: #e73a40;
+}

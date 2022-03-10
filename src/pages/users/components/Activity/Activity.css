@@ -1,0 +1,32 @@
+.activity {
+    min-height: 240px;
+    border: 1px solid black;
+}
+
+.activity-head {
+    border: 3px solid blue;
+}
+
+.activity-body {
+    min-height: 200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 10px;
+    border: 3px solid yellow;
+}
+
+.activity-inputs {
+    border: none;
+    background-color: white;
+}
+
+.klicks {
+    min-height: 40px;
+    font-size: 24px;
+    color: black;
+    font-weight: bold;
+}
+
+.other-inputs {
+    min-height: 30px;
+}
