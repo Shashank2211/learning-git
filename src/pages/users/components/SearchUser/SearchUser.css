@@ -28,11 +28,13 @@
 .header {
     /* width: 1650px; */
     height: 20px;
-    margin-top: 15px;
+    /* margin-top: 15px; */
+    margin-bottom: 20px;
     box-sizing: border-box;
     color: #555555;
     font-size: 30px;
 }
+
 
 .no-of-users {
     width: 200px;

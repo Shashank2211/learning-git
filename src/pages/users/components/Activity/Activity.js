@@ -1,5 +1,6 @@
 import React from 'react'
 import { useState } from 'react';
+import { act } from 'react-dom/test-utils';
 import { activityQueries } from '../Queries';
 import './Activity.css'
 
@@ -17,6 +18,7 @@ const Activity = ({singleActivity, isDisabledButton}) => {
     const [stream, setStream] = useState(singleActivity.stream);
     const [comment, setComment] = useState(singleActivity.comment);
     const [mins, setMins] = useState(singleActivity.min);
+    const [rawData, setRawData] = useState(singleActivity.raw_data);
 
 
     const clickHandlerOfEditActivity = (e) => {
@@ -47,8 +49,17 @@ const Activity = ({singleActivity, isDisabledButton}) => {
             fetchGraphQLActivity(activityQueries[5], "UpdateMins", variables[5]).then(res => {
                 setMins(res.data.update_useractivitydata.returning[0].min);
             });
+            // raw data
+            fetchGraphQLActivity(activityQueries[6], "UpdateRawData", variables[6]).then(res => {
+                // console.log(res);
+                setRawData(res.data.update_useractivitydata.returning[0].raw_data);
+            }).catch(res => {
+                console.log(res);
+            })
         }
     }
+
+    // console.log(rawData);
 
     const variables = [
         {
@@ -74,6 +85,10 @@ const Activity = ({singleActivity, isDisabledButton}) => {
         {
             "min" : mins,
             "_eq" : singleActivity.id
+        },
+        {
+            "raw_data" : rawData,
+            "_eq" : singleActivity.id
         }
     ]
 
@@ -83,36 +98,39 @@ const Activity = ({singleActivity, isDisabledButton}) => {
             {
                 (isDisabledActivity)?
                 (
-                    <input className='activity-inputs klicks' disabled={isDisabledActivity} type="text" value={klicks+" klicks"} />
+                    <input className='activity-inputs klicks' disabled={isDisabledActivity} type="text" value={((klicks==null)?(0):klicks)+" Klicks"} />
                 ):
                 (
-                    <input className='' type="text" value={klicks} onChange={e => setKlicks(e.target.value)} />
+                    <>Klicks: <input className='' type="text" value={klicks} onChange={e => setKlicks(e.target.value)} /></>
                 )
             }
         </div>
+        <hr />
         <div className='activity-body' >
-            <div>
+            <div style={{maxWidth:"100%", paddingRight:"5px", borderRight:"0.5px solid #abb2b9"}} >
             {
                 (isDisabledActivity)?
                 (
                     <>
-                    <div style={{display:"flex", alignItems:"center", justifyContent:"center"}} >
-                        <input className='activity-inputs other-inputs' type="number" disabled={isDisabledActivity} value={calories} />{" KCal"}
+                    <div style={{display:"flex", alignItems:"center", justifyContent:"start"}} >
+                        <input className='activity-inputs other-inputs' type="number" disabled={isDisabledActivity} value={((calories=="")?("0"):calories)} /><p style={{color:"black", fontSize:"14px", fontStyle:"italic"}} >{" KCal"}</p>
                     </div>
-                    <div style={{display:"flex", alignItems:"center", justifyContent:"center"}} >
-                        <input className='activity-inputs other-inputs' type="number" disabled={isDisabledActivity} value={steps} />{" Steps"}
+                    <hr />
+                    <div style={{display:"flex", alignItems:"center", justifyContent:"start"}} >
+                        <input className='activity-inputs other-inputs' type="number" disabled={isDisabledActivity} value={((steps=="")?("0"):steps)} /><p style={{color:"black", fontSize:"14px", fontStyle:"italic"}} >{" Steps"}</p>
                     </div>
+                    <hr />
                     </>
                 ):
                 (
                     <>
-                        <input className='' type="number" value={calories} onChange={e => setCalories(e.target.value)} />
-                        <input className='' type="number" value={steps} onChange={e => setSteps(e.target.value)} />
+                        Calories: <input className='other-inputs activity-editable-fields' type="number" value={((calories=="")?("0"):calories)} onChange={e => setCalories(e.target.value)} />
+                        Steps: <input className='other-inputs activity-editable-fields' type="number" value={((steps=="")?("0"):steps)} onChange={e => setSteps(e.target.value)} />
                     </>
                 )
             }
                 {(isDisabledActivity)?
-                (<div>{"via "}<input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={stream} />{" entry"}</div>):
+                (<><div>{"via "}<input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={((stream=="")?("0"):stream)} /></div><hr /></>):
                 (
                     <div>
                         <label htmlFor="Stream">Stream:</label>
@@ -126,32 +144,37 @@ const Activity = ({singleActivity, isDisabledButton}) => {
                 {
                 (isDisabledActivity)?
                 (
-                    <input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={"Comment: "+comment} />
+                    <div className='other-inputs-1' >
+                        <p style={{color:"rgb(100, 100, 100)"}} >Comment:</p> {((comment=="")?("-"):comment)}
+                    </div>
+                    // <textarea className='activity-inputs other-inputs' name='body' disabled={isDisabledActivity} value={"Comment: "+((comment=="")?("-"):comment)} ></textarea>
                 ):
                 (
-                    <input className='' type="text" value={comment} onChange={e => setComment(e.target.value)} />
+                    <>
+                        Comment: <textarea className='' name='body' value={((comment=="")?("0"):comment)} onChange={e => setComment(e.target.value)} ></textarea>
+                    </>
                 )
             }
             </div>
-            <div>
+            <div style={{maxWidth:"100%", paddingLeft:"5px", borderLeft:"0.5px solid #abb2b9"}} >
             {
                 (isDisabledActivity)?
                 (
                     <>
-                        <input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={mins+" mins"} />
-                        <input className='' type="text" disabled={isDisabledActivity} />
+                        <input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={((mins=="")?("0"):mins)+" Mins"} /><hr />
+                        <input className='activity-inputs other-inputs' type="text" disabled={isDisabledActivity} value={((rawData==0)?(0):rawData)+((singleActivity.is_distance)?' Km':' Mins')} /><hr />
                     </>
                 ):
                 (
                     <>
-                        <input className='activity-inputs other-inputs' type="text" value={mins} onChange={e => setMins(e.target.value)} />
-                        <input className='' type="text" />
+                        Mins: <input className='other-inputs' type="text" value={((mins=="")?("0"):mins)} onChange={e => setMins(e.target.value)} />
+                        {(singleActivity.is_distance)?"Km: ":"Mins: "}<input className='other-inputs' type="text" value={((rawData==0)?(0):rawData)} onChange={e => setRawData(e.target.value)} />
                     </>
                 )
             }
             </div>
         </div>
-        <button disabled={isDisabledButton} onClick={clickHandlerOfEditActivity} >Edit Activity</button>
+        <button className={(isDisabledButton)?'block activity-edit-button-disabled':((isDisabledActivity)?'activity-edit-button':'activity-save-button')} disabled={isDisabledButton} onClick={clickHandlerOfEditActivity} >Edit Activity</button>
     </div>
   )
 }

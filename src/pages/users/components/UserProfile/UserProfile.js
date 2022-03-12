@@ -6,7 +6,7 @@ import { TiHome } from 'react-icons/ti'
 import { ImFire } from 'react-icons/im'
 import { useLocation } from 'react-router-dom'
 import { queries } from '../Queries'
-import moment, { Moment } from 'moment'
+import moment, { max, Moment } from 'moment'
 import DateTimePicker from 'react-datetime-picker'
 import DatePicker from 'react-date-picker'
 import Activity from '../Activity/Activity'
@@ -87,7 +87,7 @@ function UserProfile(props) {
             });
             // date of birth
             fetchGraphQL(queries[9], "UpdateDob", variables[8]).then(res => {
-                console.log(res.data.update_user.returning[0].dob);
+                setDob(res.data.update_user.returning[0].dob);
             });
         }
     }
@@ -180,7 +180,7 @@ function UserProfile(props) {
                     <div className='uidi-div' >
                         {(isDisabled)?
                         (
-                            <input className={(isDisabled)?'display-member-since':'editable-input-field'} disabled={isDisabled} type="text" value={(joined == null) ? "-" : joined} />
+                            <input className={(isDisabled)?'display-member-since':'editable-input-field'} disabled={isDisabled} type="text" value={"Member Since "+((joined == null) ? "-" : joined)} />
                         ):
                         (
                             <div className='customDatePickerWidth' >
@@ -192,7 +192,7 @@ function UserProfile(props) {
                 <div className='user-personal-info-div' >
                     <div className='upid-head' >
                         <h3 className='head-header' >Personal Info</h3>
-                        <button className='edit-button' onClick={clickHandlerOfEdit} >{(isDisabled) ? "Edit" : "Save"}<MdOutlineModeEdit className='edit-icon' /></button>
+                        <button className={(isDisabled)?'edit-button':'save-button'} onClick={clickHandlerOfEdit} >{(isDisabled) ? "Edit" : "Save"}<MdOutlineModeEdit className='edit-icon' /></button>
                     </div>
                     <div className='upid-body' >
                         <div className='upid-body-div' >
@@ -205,19 +205,19 @@ function UserProfile(props) {
                             <div className='upid-body-div-subdiv' >
                                 <MdPhone className='div-icon' />
                                 <div className='editable-field-div' >
-                                    <input className={(isDisabled)?'display-field':'editable-input-field'} type="text" disabled={isDisabled} value={(phoneNumber == null) ? "-" : phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
+                                    <input className={(isDisabled)?'display-field':'editable-input-field edit-email'} type="text" disabled={isDisabled} value={(phoneNumber == null) ? "-" : phoneNumber} onChange={e => setPhoneNumber(e.target.value)} />
                                 </div>
                             </div>
                             <div className='upid-body-div-subdiv' >
                                 <IoMdGlobe className='div-icon' />
                                 <div className='editable-field-div' >
-                                    <input className={(isDisabled)?'display-field':'editable-input-field'} type="text" disabled={isDisabled} value={(country == null) ? "-" : country} onChange={e => setCountry(e.target.value)} />
+                                    <input className={(isDisabled)?'display-field':'editable-input-field edit-email'} type="text" disabled={isDisabled} value={(country == null) ? "-" : country} onChange={e => setCountry(e.target.value)} />
                                 </div>
                             </div>
                             <div className='upid-body-div-subdiv address-outer-div' >
                                 <TiHome className='div-icon' />
                                 <div className='editable-field-div' >
-                                    <textarea className={(isDisabled)?'display-field address':'editable-input-field'} name='body' value={address} onChange={e => setAddress(e.target.value)} disabled={isDisabled} ></textarea>
+                                    <textarea className={(isDisabled)?'display-field address':'editable-input-field edit-email'} name='body' value={address} onChange={e => setAddress(e.target.value)} disabled={isDisabled} ></textarea>
                                     {/* <input className={(isDisabled)?'display-field':'editable-input-field'} type="text" disabled={isDisabled} value={(address == null) ? "-" : address} onChange={e => setAddress(e.target.value)} /> */}
                                 </div>
                             </div>
@@ -266,8 +266,8 @@ function UserProfile(props) {
                 <div className='last-added-distance' >
                     <div className='LAD-head' >
                         <h3 className='head-header' >Last Added Distance</h3>
-                        <button className='LAD-head-view-all' >View All</button>
-                        <button className='edit-button' onClick={handleClickOfActivityEditButton && anotherEditHandler} >{(isDisabledActivity)?"Edit":"Save"} <MdOutlineModeEdit className='edit-icon' /></button>
+                        <button className='LAD-head-view-all block' >View All</button>
+                        <button className={(isDisabledActivity)?'edit-button':'save-button'} onClick={handleClickOfActivityEditButton && anotherEditHandler} >{(isDisabledActivity)?"Edit":"Save"} <MdOutlineModeEdit className='edit-icon' /></button>
                     </div>
                     <div className='LAD-body' >
                         {
@@ -282,7 +282,7 @@ function UserProfile(props) {
                 <div className='streak' >
                     <div className='streak-head' >
                         <h3 className='head-header' >Streak</h3>
-                        <button className='edit-button' >Edit <MdOutlineModeEdit className='edit-icon' /></button>
+                        <button className='edit-button block' >Edit <MdOutlineModeEdit className='edit-icon' /></button>
                     </div>
                     <div className='streak-body' >
                         <div className='streaks-div' >
@@ -292,7 +292,7 @@ function UserProfile(props) {
                             </div>
                             <div className='streaks-divs-right' >
                                 {/* <ImFire className='fire-symbol' /> */}
-                                <p className='duration' >{getStreak(userActivityDates)}</p>
+                                <p className='duration' >{getStreak(userActivityDates)[0]}</p>
                             </div>
                         </div>
                         <div className='streaks-div' >
@@ -301,7 +301,7 @@ function UserProfile(props) {
                                 <p className='duration' >Duration</p>
                             </div>
                             <div className='streaks-divs-right' >
-                                <p className='duration' >Streak Count</p>
+                                <p className='duration' >{getStreak(userActivityDates)[1]}</p>
                             </div>
                         </div>
                     </div>
@@ -339,10 +339,12 @@ async function fetchGraphQL(operationsDoc, operationName, variables) {
 }
 
 function getStreak(allDatesArray) {
+    let outputArray = []
+    let streakArr = [];
     let strCal = [];
     let streak = 1;
-    if (allDatesArray.length === 0) return 0;
-    if (allDatesArray.length === 1) { streak = 1; return streak; }
+    if (allDatesArray.length === 0) { outputArray = [0,0]; return outputArray; }
+    if (allDatesArray.length === 1) { streak = 1; outputArray = [1, 1]; return outputArray; }
     for (let i = 0; i < allDatesArray.length; i++) {
         let ud = new Date(allDatesArray[i].updated_date);
         let d = new Date(allDatesArray[i].date);
@@ -360,12 +362,21 @@ function getStreak(allDatesArray) {
     {
         if (strCal[i+1].getTime()-strCal[i].getTime()>86400000)
         {
+            streakArr.push(streak);
             streak=1;
         } else {
             streak+=1;
         }
     }
-    return streak;
+    streakArr.push(streak);
+
+    // console.log(streakArr);
+    // console.log(max(streakArr));
+
+    outputArray.push(streak);
+    outputArray.push(max(streakArr));
+
+    return outputArray;
 }
 
 export default UserProfile

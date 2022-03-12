@@ -1,18 +1,68 @@
 .activity {
     min-height: 240px;
     border: 1px solid black;
+    border-radius: 10px;
+    padding: 10px;
+    /* box-shadow: 6px 4px 14px grey; */
 }
 
 .activity-head {
-    border: 3px solid blue;
+    /* border: 3px solid blue; */
 }
 
 .activity-body {
     min-height: 200px;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-gap: 10px;
-    border: 3px solid yellow;
+    /* grid-gap: 10px; */
+    
+    /* margin: 10px; */
+    /* border: 3px solid yellow; */
+}
+
+.activity-edit-button-disabled {
+    width: 75px;
+    height: 30px;
+    font-size: 13px;
+    background-color: rgb(200, 200, 200);
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 7px;
+    line-height: 1.2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.activity-edit-button {
+    width: 75px;
+    height: 30px;
+    font-size: 13px;
+    background-color: #E73A40;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 7px;
+    line-height: 1.2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.activity-save-button {
+    width: 75px;
+    height: 30px;
+    font-size: 13px;
+    background-color: #2BB229;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 7px;
+    line-height: 1.2;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .activity-inputs {
@@ -28,5 +78,28 @@
 }
 
 .other-inputs {
-    min-height: 30px;
+    min-height: 40px;
+    width: 70px;
+    color: black;
+    font-size: 14px;
+    /* font-style: italic; */
+}
+
+.other-inputs-1 {
+    width: 139px;
+    color: black;
+    font-size: 14px;
+    margin-top: 10px;
+    /* font-style: italic; */
+    /* background-color: green; */
+}
+
+/* .activity-field-improve-display {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+} */
+
+.activity-editable-fields {
+    width: 100px;
 }
